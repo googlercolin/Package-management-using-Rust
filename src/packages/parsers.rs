@@ -22,6 +22,23 @@ impl Packages {
             for line in lines {
                 if let Ok(ip) = line {
                     // do something with ip
+                    match kv_regexp.captures(&ip) {
+                        None => (),
+                        Some(caps) => {
+                            let (key, value) = (caps.name("key").unwrap().as_str(),
+                                                caps.name("value").unwrap().as_str());
+                            if key == "Package" {
+                                current_package_num =
+                                    self.get_package_num_inserting(&value);
+                            }
+
+                            else if key == "Version" {
+                                let debver =
+                                    value.trim().parse::<debversion::DebianVersionNum>().unwrap();
+                                self.installed_debvers.insert(current_package_num, debver);
+                            }
+                        }
+                        }
                 }
             }
         }
