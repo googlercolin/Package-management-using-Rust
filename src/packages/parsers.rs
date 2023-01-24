@@ -5,7 +5,7 @@ use std::path::Path;
 use regex::Regex;
 
 use crate::Packages;
-use crate::packages::RelVersionedPackageNum;
+use crate::packages::{Dependency, RelVersionedPackageNum};
 
 use rpkg::debversion;
 
@@ -56,6 +56,87 @@ impl Packages {
             for line in lines {
                 if let Ok(ip) = line {
                     // do more things with ip
+                    match kv_regexp.captures(&ip) {
+                        None => (),
+                        Some(caps) => {
+                            let (key, value) = (caps.name("key").unwrap().as_str(),
+                                                caps.name("value").unwrap().as_str());
+
+                            match key {
+                                "Package" => {
+                                    current_package_num =
+                                        self.get_package_num_inserting(&value);
+                                },
+                                "Version" => {
+                                    let debver =
+                                        value.trim().parse::<debversion::DebianVersionNum>().unwrap();
+                                    self.available_debvers.insert(current_package_num, debver);
+                                },
+                                "MD5sum" => {
+                                    self.md5sums.insert(current_package_num, value.to_string());
+                                },
+                                "Depends" => {
+                                    let all_deps = value.to_string();
+                                    let all_deps = all_deps.split(",");
+                                    let all_deps: Vec<&str> = all_deps.collect();
+                                    let mut vec_str_deps: Vec<Vec<&str>> = vec![];
+                                    let mut final_deps: Vec<Dependency> = vec![];
+                                    for a_deps in all_deps {
+                                        let a_deps = a_deps.split("|");
+                                        let a_deps: Vec<&str> = a_deps.collect();
+                                        vec_str_deps.push(a_deps);
+                                    }
+                                    for vec_str_dep in vec_str_deps {
+                                        let mut final_dep: Dependency = vec![];
+                                        for str_dep in vec_str_dep {
+                                            match pkgver_regexp.captures(str_dep) {
+                                                None => (),
+                                                Some(caps) => {
+                                                    let pkg = caps.name("pkg").unwrap().as_str();
+                                                    current_package_num =
+                                                        self.get_package_num_inserting(pkg);
+
+                                                    let mut option_bool = false;
+
+                                                    let op = match caps.name("op") {
+                                                        Some(x) =>
+                                                            Some(x.as_str().parse::<debversion::VersionRelation>().unwrap()),
+                                                        None => None,
+                                                    };
+
+                                                    let ver = match caps.name("ver") {
+                                                        Some(x) => Some(x.as_str().to_string()),
+                                                        None => None,
+                                                    };
+
+                                                    match op {
+                                                        None => {
+                                                            let dep = RelVersionedPackageNum {
+                                                                package_num: current_package_num,
+                                                                rel_version: None,
+                                                            };
+                                                            final_dep.push(dep);
+                                                        }
+                                                        Some(x) => {
+                                                            let dep = RelVersionedPackageNum {
+                                                                package_num: current_package_num,
+                                                                rel_version: Some((x, ver.unwrap())),
+                                                            };
+                                                            final_dep.push(dep);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        final_deps.push(final_dep);
+                                    }
+                                    // println!("{:?}", final_deps);
+                                },
+                                _ => (),
+                            }
+                        }
+                    }
+                    // println!("{:?}", ip);
                 }
             }
         }
