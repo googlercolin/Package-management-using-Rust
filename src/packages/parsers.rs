@@ -65,15 +65,20 @@ impl Packages {
                             match key {
                                 "Package" => {
                                     current_package_num =
-                                        self.get_package_num_inserting(&value);
+                                        self.get_package_num_inserting(value);
+                                    // println!("pkg: {} {}", value, current_package_num);
                                 },
                                 "Version" => {
+                                    // println!("ver-1: {} {}", current_package_num, value);
                                     let debver =
                                         value.trim().parse::<debversion::DebianVersionNum>().unwrap();
                                     self.available_debvers.insert(current_package_num, debver);
+                                    // println!("ver-2: {} {}", current_package_num, value);
                                 },
                                 "MD5sum" => {
-                                    self.md5sums.insert(current_package_num, value.to_string());
+                                    // println!("md5-1: {} {} {}", current_package_num, value, value.trim().to_string());
+                                    self.md5sums.insert(current_package_num, value.trim().to_string());
+                                    // println!("md5-2: {} {} {}", current_package_num, value, value.trim().to_string());
                                 },
                                 "Depends" => {
                                     let all_deps = value.to_string();
@@ -93,10 +98,8 @@ impl Packages {
                                                 None => (),
                                                 Some(caps) => {
                                                     let pkg = caps.name("pkg").unwrap().as_str();
-                                                    current_package_num =
+                                                    let package_num =
                                                         self.get_package_num_inserting(pkg);
-
-                                                    let mut option_bool = false;
 
                                                     let op = match caps.name("op") {
                                                         Some(x) =>
@@ -112,14 +115,14 @@ impl Packages {
                                                     match op {
                                                         None => {
                                                             let dep = RelVersionedPackageNum {
-                                                                package_num: current_package_num,
+                                                                package_num,
                                                                 rel_version: None,
                                                             };
                                                             final_dep.push(dep);
                                                         }
                                                         Some(x) => {
                                                             let dep = RelVersionedPackageNum {
-                                                                package_num: current_package_num,
+                                                                package_num,
                                                                 rel_version: Some((x, ver.unwrap())),
                                                             };
                                                             final_dep.push(dep);
@@ -131,6 +134,7 @@ impl Packages {
                                         final_deps.push(final_dep);
                                     }
                                     // println!("{:?}", final_deps);
+                                    self.dependencies.insert(current_package_num, final_deps);
                                 },
                                 _ => (),
                             }
