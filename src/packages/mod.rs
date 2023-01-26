@@ -104,9 +104,9 @@ impl Packages {
     pub fn get_md5sum(&self, package_name: &str) -> Option<&str> {
         let package_num = self.package_name_to_num.get(package_name);
         return match package_num {
-            None => { println!("1"); None },
+            None => { None },
             Some(x) => match self.md5sums.get(x) {
-                None => {println!("2"); None },
+                None => { None },
                 Some(y) => Some(y)
             }
         }

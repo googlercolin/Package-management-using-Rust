@@ -1,5 +1,6 @@
 use crate::Packages;
 use crate::packages::Dependency;
+use itertools::Itertools;
 
 impl Packages {
     /// Computes a solution for the transitive dependencies of package_name; when there is a choice A | B | C, 
@@ -12,10 +13,27 @@ impl Packages {
         }
 
         let deps : &Vec<Dependency> = &*self.dependencies.get(self.get_package_num(package_name)).unwrap();
-        let mut dependency_set = vec![];
+        let mut dependency_set:Vec<i32> = vec![];
 
         // implement worklist
 
+        for dep in deps {
+            dependency_set.push(dep.get(0).unwrap().package_num)
+        }
+
+        let mut i = 0;
+        while let Some(pkg_num)= dependency_set.get(i) {
+            if let Some(deps) = self.dependencies.get(pkg_num){
+                for dep in deps {
+                    let dep_num = dep.get(0).unwrap().package_num;
+                    if !dependency_set.contains(&dep_num) {
+                        dependency_set.push(dep_num);
+                        // println!("{:?}", dependency_set);
+                    }
+                }
+            };
+            i = i + 1;
+        }
         return dependency_set;
     }
 
