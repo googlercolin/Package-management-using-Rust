@@ -1,0 +1,83 @@
+
+======== Try 1 ========
+
+Test #1 (load_packages): PASS
+=========
+Test #2 (load_installed): PASS
+=========
+Test #3 (info): PASS
+=========
+Test #4 (deps_available): PASS
+=========
+Test #5 (deps_available): PASS
+=========
+Test #6 (deps_available): PASS
+=========
+Test #7 (deps_available): PASS
+=========
+Test #8 (deps_available): PASS
+=========
+Test #9 (transitive_dep_solution): PASS
+=========
+Test #10 (transitive_dep_solution): PASS
+=========
+Test #11 (transitive_dep_solution): PASS
+=========
+Test #12 (transitive_dep_solution): PASS
+=========
+Test #13 (transitive_dep_solution): PASS
+=========
+Test #14 (how_to_install): PASS
+=========
+Test #15 (how_to_install): PASS
+=========
+Test #16 (how_to_install): PASS
+=========
+Test #17 (how_to_install): PASS
+=========
+Test #18 (how_to_install): PASS
+=========
+Test #19 (how_to_install): PASS
+=========
+Test #20 (how_to_install): PASS
+=========
+Test #21 (how_to_install): PASS
+=========
+Test #22 (how_to_install): PASS
+=========
+Test #23 (how_to_install): PASS
+=========
+Test #24 (how_to_install): PASS
+=========
+Test #25 (how_to_install): PASS
+=========
+Test #26 (how_to_install): PASS
+=========
+Test #27 (how_to_install): PASS
+=========
+Test #28 (how_to_install): PASS
+=========
+Test #29 (how_to_install): PASS
+=========
+Test #30 (how_to_install): PASS
+=========
+Test #31 (how_to_install): PASS
+=========
+Test #32 (how_to_install): PASS
+=========
+Test #33 (how_to_install): PASS
+=========
+Test #34 (how_to_install): PASS
+=========
+Test #35 (how_to_install): PASS
+=========
+Test #36 (how_to_install): PASS
+=========
+Test #37 (how_to_install): PASS
+=========
+Test #38 (how_to_install): PASS
+=========
+Test #39 (how_to_install): PASS
+=========
+Test #40 (how_to_install): PASS
+=========
